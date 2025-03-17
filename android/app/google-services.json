@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "249424497337",
+    "project_id": "spytifo-3c62f",
+    "storage_bucket": "spytifo-3c62f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:249424497337:android:96ffad0972fc7d550c6968",
+        "android_client_info": {
+          "package_name": "com.example.spytifo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXLuoobocUyTTDC-y2KQ3ebP8HSNDa7Is"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
