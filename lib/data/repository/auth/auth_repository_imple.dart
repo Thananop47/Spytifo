@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:spytifo/data/models/auth/create_user_req.dart';
+
 import 'package:spytifo/data/models/auth/reset_password_req.dart';
 import 'package:spytifo/data/models/auth/signin_user_req.dart';
 import 'package:spytifo/data/sources/auth/auth_firebase_service.dart';

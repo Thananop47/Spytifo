@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:spytifo/presentations/screens/about_screen.dart';
 import 'package:spytifo/presentations/screens/change_password.dart';
+import 'package:spytifo/presentations/screens/signin.dart';
 
 class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  State<ProfilePage> createState() => _ProfilePageState();
 }
 
 class _ProfilePageState extends State<ProfilePage> {
@@ -61,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   radius: 50,
                   backgroundImage: _image != null
                       ? FileImage(_image!)
-                      : NetworkImage('URL_TO_YOUR_IMAGE') as ImageProvider,
+                      : NetworkImage('https://www.example.com/your_image.jpg'),
                 ),
               ),
               SizedBox(height: 10),
@@ -130,6 +133,8 @@ class _ProfilePageState extends State<ProfilePage> {
               ElevatedButton.icon(
                 onPressed: () async {
                   await FirebaseAuth.instance.signOut();
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (builder) => SigninPage()));
                 },
                 icon: Icon(Icons.logout, color: Colors.white),
                 label: Text('Log out', style: TextStyle(color: Colors.white)),

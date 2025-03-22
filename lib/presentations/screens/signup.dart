@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:spytifo/data/models/auth/create_user_req.dart';
+import 'package:spytifo/data/sources/auth/auth_firebase_service.dart';
 import 'package:spytifo/domain/usecase/auth/signup.dart';
 
 import 'package:spytifo/presentations/screens/signin.dart';
@@ -143,11 +144,14 @@ class Signup extends StatelessWidget {
                 spacing: 20,
                 children: [
                   Loginwith(
+                    onPressed: () async {
+                      await AuthFirebaseServiceImpl().signinWithGoogle();
+                    },
                     imageLogoPath: 'assets/images/google_logo.png',
                   ),
-                  Loginwith(
-                    imageLogoPath: 'assets/images/fb_logo.png',
-                  ),
+                  // Loginwith(
+                  //   imageLogoPath: 'assets/images/fb_logo.png',
+                  // ),
                 ],
               ),
             ],
@@ -184,6 +188,7 @@ class Signup extends StatelessWidget {
   Widget _passwordField(BuildContext context) {
     return TextField(
       controller: _password,
+      obscureText: true,
       decoration: InputDecoration(
         labelText: "password",
         contentPadding: EdgeInsets.all(20),

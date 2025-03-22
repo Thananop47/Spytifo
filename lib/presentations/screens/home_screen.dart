@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:spytifo/data/models/songs/playlist_provider.dart';
+import 'package:spytifo/presentations/screens/artist_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -6,6 +9,21 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "All Songs",
+          style: TextStyle(color: Colors.white),
+        ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF6C2D2C), Color(0xFF42313A)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+      ),
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -20,7 +38,6 @@ class HomeScreen extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(10),
           child: ListView(
-            // ใช้ ListView เพื่อให้เลื่อนทั้งหน้าได้
             children: [
               Image.asset(
                 "assets/images/heryented.jpg",
@@ -30,20 +47,23 @@ class HomeScreen extends StatelessWidget {
               ),
               SizedBox(height: 10),
               GridView.count(
-                shrinkWrap: true, // ให้ GridView มีขนาดตามเนื้อหา
-                physics:
-                    NeverScrollableScrollPhysics(), // ปิดการเลื่อนของ GridView
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
                 childAspectRatio: 3,
                 children: [
-                  _buildGridButton(Icons.favorite_border, "Like"),
-                  _buildGridButton(Icons.music_note, "Daily mix1"),
-                  _buildGridButton(Icons.album, "Youngohm"),
-                  _buildGridButton(Icons.play_circle, "p9d"),
-                  _buildGridButton(Icons.color_lens, "tattoo colour"),
-                  _buildGridButton(Icons.star, "YENTAD"),
+                  _buildGridButton(
+                      context, Icons.favorite_border, "Like", "Yented"),
+                  _buildGridButton(
+                      context, Icons.music_note, "Daily mix1", "YoungOhm"),
+                  _buildGridButton(
+                      context, Icons.album, "Youngohm", "YoungOhm"),
+                  _buildGridButton(context, Icons.play_circle, "PUN", "PUN"),
+                  _buildGridButton(
+                      context, Icons.color_lens, "Illslick", "Illslick"),
+                  _buildGridButton(context, Icons.star, "YENTED", "Yented"),
                 ],
               ),
             ],
@@ -53,14 +73,30 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildGridButton(IconData icon, String text) {
+  Widget _buildGridButton(
+      BuildContext context, IconData icon, String text, String artistName) {
+    final playlistProvider =
+        Provider.of<PlaylistProvider>(context, listen: false);
+
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: Color(0xFF665A5A),
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       ),
-      onPressed: () {},
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ArtistDetailScreen(
+              artistName: artistName,
+              songs: playlistProvider.playlist
+                  .where((song) => song.artistName == artistName)
+                  .toList(),
+            ),
+          ),
+        );
+      },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [

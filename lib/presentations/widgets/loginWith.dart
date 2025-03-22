@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class Loginwith extends StatelessWidget {
-  Loginwith({
-    super.key,
-    required this.imageLogoPath,
-  });
+  Loginwith({super.key, required this.imageLogoPath, required this.onPressed});
 
   String imageLogoPath = '';
+
+  var onPressed;
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: () {
+        onPressed();
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
         fixedSize: Size(72, 60),

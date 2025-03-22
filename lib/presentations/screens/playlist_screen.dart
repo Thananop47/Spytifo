@@ -36,7 +36,10 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("P L A Y L I S T"),
+        title: Text(
+          "P L A Y L I S T",
+          style: TextStyle(color: Colors.white),
+        ),
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -67,19 +70,41 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
               itemBuilder: (context, index) {
                 final Song song = playlist[index];
 
-                return ListTile(
-                  title: Text(song.songName),
-                  subtitle: Text(song.artistame),
-                  leading: Image.asset(song.albumArtImagePath),
-                  onTap: () => goToSong(index),
+                return Container(
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[850],
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: ListTile(
+                    title: Text(
+                      song.songName,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    subtitle: Text(
+                      song.artistName,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    leading: Image.asset(
+                      song.albumArtImagePath,
+                      width: 150,
+                      height: 200,
+                      fit: BoxFit.cover,
+                    ),
+                    onTap: () => goToSong(index),
+                  ),
                 );
               });
         }),
       ),
     );
-  }
-
-  Widget songImg(BuildContext context) {
-    return Container();
   }
 }

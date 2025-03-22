@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:spytifo/data/models/auth/create_user_req.dart';
 import 'package:spytifo/data/models/auth/reset_password_req.dart';
 import 'package:spytifo/data/models/auth/signin_user_req.dart';
@@ -79,5 +80,21 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
       }
       return left(message);
     }
+  }
+
+  Future<UserCredential?> signinWithGoogle() async {
+    try {
+      await GoogleSignIn().signOut();
+      final googleUser = await GoogleSignIn().signIn();
+
+      final googleAuth = await googleUser?.authentication;
+
+      final cred = GoogleAuthProvider.credential(
+          idToken: googleAuth?.idToken, accessToken: googleAuth?.accessToken);
+      return await FirebaseAuth.instance.signInWithCredential(cred);
+    } catch (e) {
+      print(e.toString());
+    }
+    return null;
   }
 }

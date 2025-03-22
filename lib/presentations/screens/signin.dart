@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:spytifo/data/models/auth/signin_user_req.dart';
+import 'package:spytifo/data/sources/auth/auth_firebase_service.dart';
 import 'package:spytifo/domain/usecase/auth/signin.dart';
+import 'package:spytifo/presentations/screens/facebook.dart';
 import 'package:spytifo/presentations/screens/forgot_pswd.dart';
 import 'package:spytifo/presentations/screens/homescreen.dart';
 import 'package:spytifo/presentations/screens/signup.dart';
@@ -23,7 +25,7 @@ class SigninPage extends StatelessWidget {
           Image.asset(
             "assets/images/spytifo_logo.jpg",
             width: 300,
-            height: 250,
+            height: 200,
           ),
           Text(
             "Unleash yourself with the music you love.",
@@ -52,6 +54,7 @@ class SigninPage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 50),
             child: TextField(
               controller: _password,
+              obscureText: true,
               decoration: InputDecoration(
                 prefixIcon: Icon(Icons.key_rounded),
                 labelText: "password",
@@ -81,7 +84,7 @@ class SigninPage extends StatelessWidget {
             ],
           ),
           SizedBox(
-            height: 20,
+            height: 10,
           ),
           ElevatedButton(
             onPressed: () async {
@@ -130,7 +133,7 @@ class SigninPage extends StatelessWidget {
             ],
           ),
           SizedBox(
-            height: 20,
+            height: 10,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -161,16 +164,23 @@ class SigninPage extends StatelessWidget {
             ],
           ),
           SizedBox(
-            height: 30,
+            height: 10,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             spacing: 20,
             children: [
               Loginwith(
+                onPressed: () async {
+                  await AuthFirebaseServiceImpl().signinWithGoogle();
+                },
                 imageLogoPath: 'assets/images/google_logo.png',
               ),
               Loginwith(
+                onPressed: () async {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (builder) => Facebook()));
+                },
                 imageLogoPath: 'assets/images/fb_logo.png',
               ),
             ],

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:spytifo/data/models/songs/playlist_provider.dart';
+import 'package:spytifo/data/models/songs/song.dart';
+import 'package:spytifo/presentations/screens/song_page.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -10,21 +14,14 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   String searchQuery = "";
 
-  // รายการเพลงทั้งหมด (ตัวอย่าง)
-  final List<String> allSongs = ["ตีหนึ่งที่คูเมือง", "นครดารา", "DAY ONE"];
-
-  // ฟังก์ชันกรองเพลงตามคำที่ค้นหา
-  List<String> get filteredSongs {
-    if (searchQuery.isEmpty) {
-      return [];
-    }
-    return allSongs
-        .where((song) => song.toLowerCase().contains(searchQuery.toLowerCase()))
-        .toList();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final playlistProvider = Provider.of<PlaylistProvider>(context);
+    final List<Song> filteredSongs = playlistProvider.playlist
+        .where((song) =>
+            song.songName.toLowerCase().contains(searchQuery.toLowerCase()))
+        .toList();
+
     return Scaffold(
       appBar: AppBar(
         flexibleSpace: Container(
@@ -66,91 +63,96 @@ class _SearchScreenState extends State<SearchScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF121212),
-              Color(0xFF1E1E1E),
-            ],
+            colors: [Color(0xFF121212), Color(0xFF1E1E1E)],
           ),
         ),
         child: Padding(
           padding: EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Grid ของปุ่ม
-              Flexible(
-                child: GridView.count(
-                  shrinkWrap:
-                      true, // ป้องกันไม่ให้ GridView ขยายเกินพื้นที่จำเป็น
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                  childAspectRatio: 3,
-                  children: [
-                    _buildGridButton(Icons.favorite_border, "Like"),
-                    _buildGridButton(Icons.music_note, "Daily mix1"),
-                    _buildGridButton(Icons.album, "Youngohm"),
-                    _buildGridButton(Icons.play_circle, "p9d"),
-                    _buildGridButton(Icons.color_lens, "tattoo colour"),
-                    _buildGridButton(Icons.star, "YENTAD"),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10),
-
-              // หัวข้อ "Thai song"
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                child: Text(
-                  "Thai song",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              SizedBox(height: 5),
-
-              // แถวของรูปภาพ 2 รูป
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildImageCard(
-                      "Tattoo colour", "assets/images/tattooColour.jpg"),
-                  _buildImageCard("BigAss", "assets/images/bigass.jpg"),
-                ],
-              ),
-              SizedBox(height: 20),
-
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                child: Text(
-                  "Hot",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-              SizedBox(height: 5),
-
-              // แถวของรูปภาพ 2 รูปสำหรับ "Hot"
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildImageCard("Z9", "assets/images/z9.jpg"),
-                  _buildImageCard("4EVE", "assets/images/4eve.jpeg"),
-                ],
-              ),
-            ],
-          ),
+          child: searchQuery.isEmpty
+              ? _buildDefaultContent() // แสดงข้อมูลเริ่มต้น
+              : _buildSearchResults(filteredSongs, playlistProvider),
         ),
       ),
     );
   }
 
+  /// แสดงผลการค้นหาเพลง
+  Widget _buildSearchResults(
+      List<Song> songs, PlaylistProvider playlistProvider) {
+    if (songs.isEmpty) {
+      return Center(
+        child: Text(
+          "No results found",
+          style: TextStyle(color: Colors.white70),
+        ),
+      );
+    }
+    return ListView.builder(
+      itemCount: songs.length,
+      itemBuilder: (context, index) {
+        Song song = songs[index];
+
+        return ListTile(
+          leading: Icon(Icons.music_note, color: Colors.white),
+          title: Text(song.songName, style: TextStyle(color: Colors.white)),
+          subtitle:
+              Text(song.artistName, style: TextStyle(color: Colors.white70)),
+          onTap: () {
+            int songIndex = playlistProvider.playlist.indexOf(song);
+            playlistProvider.currentSongIndex = songIndex;
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SongPage()),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  /// แสดงข้อมูลหน้าแรก (Grid button + Thai song + Hot)
+  Widget _buildDefaultContent() {
+    return ListView(
+      children: [
+        GridView.count(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          crossAxisCount: 2,
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          childAspectRatio: 3,
+          children: [
+            _buildGridButton(Icons.favorite_border, "Like"),
+            _buildGridButton(Icons.music_note, "Daily mix1"),
+            _buildGridButton(Icons.album, "Youngohm"),
+            _buildGridButton(Icons.play_circle, "p9d"),
+            _buildGridButton(Icons.color_lens, "Tattoo Colour"),
+            _buildGridButton(Icons.star, "YENTAD"),
+          ],
+        ),
+        SizedBox(height: 10),
+        _buildSectionTitle("Thai song"),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildImageCard("Tattoo Colour", "assets/images/tattooColour.jpg"),
+            _buildImageCard("BigAss", "assets/images/bigass.jpg"),
+          ],
+        ),
+        SizedBox(height: 20),
+        _buildSectionTitle("Hot"),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildImageCard("Z9", "assets/images/z9.jpg"),
+            _buildImageCard("4EVE", "assets/images/4eve.jpeg"),
+          ],
+        ),
+      ],
+    );
+  }
+
+  /// ปุ่ม Grid ด้านบน
   Widget _buildGridButton(IconData icon, String text) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
@@ -162,14 +164,31 @@ class _SearchScreenState extends State<SearchScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Icon(icon, color: Colors.white),
+          Icon(
+            icon,
+            color: Colors.white,
+            size: 15,
+          ),
           SizedBox(width: 8),
-          Text(text, style: TextStyle(fontSize: 16)),
+          Text(text, style: TextStyle(fontSize: 14)),
         ],
       ),
     );
   }
 
+  /// แสดงชื่อหมวดหมู่ (Thai Song / Hot)
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 5.0),
+      child: Text(
+        title,
+        style: TextStyle(
+            fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+      ),
+    );
+  }
+
+  /// การ์ดแสดงรูปภาพศิลปิน
   Widget _buildImageCard(String title, String imagePath) {
     return Container(
       width: 150,

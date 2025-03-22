@@ -25,7 +25,7 @@ class SongPage extends StatelessWidget {
 
         return Scaffold(
           body: Container(
-            padding: EdgeInsets.only(top: 50),
+            padding: EdgeInsets.only(top: 40),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -37,7 +37,8 @@ class SongPage extends StatelessWidget {
               ),
             ),
             child: Padding(
-              padding: const EdgeInsets.only(left: 25, right: 25, bottom: 25),
+              padding: const EdgeInsets.only(
+                  left: 25, right: 25, bottom: 25, top: 0),
               child: Column(
                 children: [
                   Row(
@@ -48,7 +49,7 @@ class SongPage extends StatelessWidget {
                           Navigator.pop(context);
                         },
                         icon: const Icon(
-                          Icons.arrow_back,
+                          Icons.arrow_back_ios_new_rounded,
                           color: Colors.white,
                         ),
                       ),
@@ -59,14 +60,17 @@ class SongPage extends StatelessWidget {
                     ],
                   ),
                   SizedBox(
-                    height: 50,
+                    height: 20,
                   ),
                   NeuBox(
                     child: Column(
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(8),
-                          child: Image.asset(currentSong.albumArtImagePath),
+                          child: Image.asset(
+                            currentSong.albumArtImagePath,
+                            fit: BoxFit.contain,
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(15.0),
@@ -83,7 +87,7 @@ class SongPage extends StatelessWidget {
                                       fontSize: 20,
                                     ),
                                   ),
-                                  Text(currentSong.artistame),
+                                  Text(currentSong.artistName),
                                 ],
                               ),
                               const Icon(Icons.favorite, color: Colors.red),
@@ -93,7 +97,7 @@ class SongPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 25),
+                  const SizedBox(height: 15),
                   Column(
                     children: [
                       Padding(
@@ -113,7 +117,7 @@ class SongPage extends StatelessWidget {
                                 color: Colors.white,
                               ),
                               onPressed: () {
-                                print('Shuffle button pressed');
+                                context.read<PlaylistProvider>().randomSong();
                               },
                             ),
                             Icon(Icons.repeat, color: Colors.white),
@@ -121,6 +125,9 @@ class SongPage extends StatelessWidget {
                                 style: TextStyle(color: Colors.white)),
                           ],
                         ),
+                      ),
+                      SizedBox(
+                        height: 20,
                       ),
                       SliderTheme(
                         data: SliderTheme.of(context).copyWith(

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
@@ -7,25 +9,25 @@ class PlaylistProvider extends ChangeNotifier {
   final List<Song> _playlist = [
     Song(
       songName: "Her",
-      artistame: "Yented",
+      artistName: "Yented",
       albumArtImagePath: "assets/images/yentedd.jpg",
       audioPath: "songs/her.mp3",
     ),
     Song(
       songName: "NakornDara",
-      artistame: "YoungOhm",
+      artistName: "YoungOhm",
       albumArtImagePath: "assets/images/nakorn.jpg",
       audioPath: "songs/nakorn.mp3",
     ),
     Song(
       songName: "dayone",
-      artistame: "PUN",
+      artistName: "PUN",
       albumArtImagePath: "assets/images/dayone.jpg",
       audioPath: "songs/dayone.mp3",
     ),
     Song(
       songName: "ตีหนึ่งที่คูเมือง",
-      artistame: "Illslick",
+      artistName: "Illslick",
       albumArtImagePath: "assets/images/teeone.jpg",
       audioPath: "songs/Tee1.mp3",
     ),
@@ -126,5 +128,15 @@ class PlaylistProvider extends ChangeNotifier {
       play();
     }
     notifyListeners();
+  }
+
+  void randomSong() {
+    if (_playlist.isNotEmpty) {
+      int randomIndex;
+      do {
+        randomIndex = Random().nextInt(_playlist.length);
+      } while (randomIndex == _currentSongIndex);
+      currentSongIndex = randomIndex;
+    }
   }
 }
