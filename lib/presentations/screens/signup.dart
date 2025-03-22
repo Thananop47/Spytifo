@@ -6,17 +6,15 @@ import 'package:spytifo/presentations/screens/signin.dart';
 import 'package:spytifo/presentations/service_locator.dart';
 import 'package:spytifo/presentations/widgets/loginWith.dart';
 
-class Signup extends StatefulWidget {
-  const Signup({super.key});
+class Signup extends StatelessWidget {
+  Signup({super.key});
 
-  @override
-  State<Signup> createState() => _SignUpPageState();
-}
-
-class _SignUpPageState extends State<Signup> {
   final TextEditingController _username = TextEditingController();
+
   final TextEditingController _email = TextEditingController();
+
   final TextEditingController _password = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

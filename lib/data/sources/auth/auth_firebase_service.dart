@@ -8,6 +8,8 @@ abstract class AuthFirebaseService {
   Future<Either> signup(CreateUserReq createUserReq);
 
   Future<Either> signin(SigninUserReq signinUserReq);
+
+  Future<Either> sendEmailResetPassword(ResetPasswordReq resetPasswordReq);
 }
 
 class AuthFirebaseServiceImpl extends AuthFirebaseService {
@@ -58,15 +60,24 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
       return left(message);
     }
   }
-  // @override
-  // Future<Either> resetPassword(ResetPasswordReq resetPasswordReq) async {
-  //   try {
-  //     await FirebaseAuth.instance.sendPasswordResetEmail(
-  //       email: resetPasswordReq.email,
-  //     );
-  //     return Right('Password reset email sent.');
-  //   } on FirebaseAuthException catch (e) {
-  //     String message = '';
-  //   }
-  // }
+
+  @override
+  Future<Either> sendEmailResetPassword(
+      ResetPasswordReq resetPasswordReq) async {
+    try {
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: resetPasswordReq.email);
+      return Right("Reset password has been send!");
+    } on FirebaseAuthException catch (e) {
+      String message = '';
+      if (resetPasswordReq.email.isEmpty) {
+        message = 'Please fill in email address field.';
+      } else if (e.code == 'user-not-found') {
+        message = 'No users found with this email address.';
+      } else if (e.code == 'invalid-email') {
+        message = 'Invalid email';
+      }
+      return left(message);
+    }
+  }
 }

@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:spytifo/data/models/auth/reset_password_req.dart';
+
+import 'package:spytifo/domain/usecase/auth/resetpswd.dart';
+import 'package:spytifo/presentations/screens/signin.dart';
+import 'package:spytifo/presentations/service_locator.dart';
 
 class ForgotPswd extends StatelessWidget {
-  const ForgotPswd({super.key});
+  ForgotPswd({super.key});
 
+  final TextEditingController _email = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 250, horizontal: 40),
+          padding: const EdgeInsets.symmetric(horizontal: 40),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 "Forgot Password",
@@ -23,6 +30,7 @@ class ForgotPswd extends StatelessWidget {
                 height: 20,
               ),
               TextField(
+                controller: _email,
                 decoration: InputDecoration(
                   labelText: "Enter email address",
                   contentPadding: EdgeInsets.all(20),
@@ -34,8 +42,24 @@ class ForgotPswd extends StatelessWidget {
                 height: 20,
               ),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
+                onPressed: () async {
+                  var result = await sl<ResetpswdUseCase>().call(
+                      params: ResetPasswordReq(email: _email.text.toString()));
+                  result.fold(
+                    (l) {
+                      var snackbar = SnackBar(content: Text(l));
+                      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                    },
+                    (r) {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) => SigninPage(),
+                        ),
+                        (route) => false,
+                      );
+                    },
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,

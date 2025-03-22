@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:spytifo/data/models/auth/signin_user_req.dart';
 import 'package:spytifo/domain/usecase/auth/signin.dart';
-import 'package:spytifo/presentations/root/pages/root.dart';
 import 'package:spytifo/presentations/screens/forgot_pswd.dart';
+import 'package:spytifo/presentations/screens/homescreen.dart';
 import 'package:spytifo/presentations/screens/signup.dart';
 import 'package:spytifo/presentations/service_locator.dart';
 import 'package:spytifo/presentations/widgets/loginWith.dart';
@@ -100,7 +100,7 @@ class SigninPage extends StatelessWidget {
                   Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(
-                      builder: (BuildContext context) => RootPage(),
+                      builder: (BuildContext context) => HomescreenNavi(),
                     ),
                     (route) => false,
                   );
